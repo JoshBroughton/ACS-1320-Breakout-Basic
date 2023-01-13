@@ -53,7 +53,7 @@
       function drawBall() {
         ctx.beginPath();
         ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-        ctx.fillStyle = "#0095DD";
+        ctx.fillStyle = "#ffda1f";
         ctx.fill();
         ctx.closePath();
       }
@@ -76,7 +76,13 @@
               bricks[c][r].y = brickY;
               ctx.beginPath();
               ctx.rect(brickX, brickY, brickWidth, brickHeight);
-              ctx.fillStyle = "#0095DD";
+              let brickColor = '#8a84e2'
+              if (r == 1) {
+                brickColor = '#ffa69e'
+              } else if (r == 2) {
+                brickColor = '#ff686b'
+              }
+              ctx.fillStyle = brickColor;
               ctx.fill();
               ctx.closePath();
             }
@@ -96,8 +102,17 @@
         ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
       }
 
+      function drawBackground() {
+        ctx.beginPath();
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#af1b3f";
+        ctx.fill();
+        ctx.closePath();
+      }
+
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawBackground();
         drawBall();
         drawPaddle();
         drawBricks();
