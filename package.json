@@ -1,0 +1,25 @@
+{
+  "name": "breakout-basic",
+  "version": "1.0.0",
+  "description": "A basic 2D Breakout type game, completed in vanilla Javascript following [this](https://developer.mozilla.org/en-US/docs/Games/Tutorials/2D_Breakout_game_pure_JavaScript) tutorial from mdn web docs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoshBroughton/ACS-1320-Breakout-Basic.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoshBroughton/ACS-1320-Breakout-Basic/issues"
+  },
+  "homepage": "https://github.com/JoshBroughton/ACS-1320-Breakout-Basic#readme",
+  "devDependencies": {
+    "eslint": "^8.32.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5"
+  }
+}
