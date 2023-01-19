@@ -1,4 +1,5 @@
-import Sprite from './sprite';
+// eslint-disable-next-line import/extensions
+import Sprite from './sprite.js';
 
 class Paddle extends Sprite {
   constructor(x = 0, y = 0, width = 75, height = 10, color = '#f00') {

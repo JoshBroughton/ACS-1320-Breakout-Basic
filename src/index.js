@@ -1,9 +1,21 @@
 /* eslint-disable no-alert */
+import Brick from './brick.js';
+import Ball from './ball.js';
+import Paddle from './paddle.js';
+import Background from './background.js';
+import Score from './score.js';
+import Lives from './lives.js';
+
 const canvas = document.getElementById('myCanvas');
 const ctx = canvas.getContext('2d');
+
+const ballX = canvas.width / 2;
+const ballY = canvas.height - 30;
 const ballRadius = 10;
 const paddleHeight = 10;
 const paddleWidth = 75;
+const paddleX = (canvas.width - paddleWidth) / 2;
+const paddleY = canvas.height - paddleHeight;
 const brickRowCount = 3;
 const brickColumnCount = 5;
 const brickWidth = 75;
@@ -12,15 +24,14 @@ const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
 
-let x = canvas.width / 2;
-let y = canvas.height - 30;
-let dx = 6;
-let dy = -6;
-let paddleX = (canvas.width - paddleWidth) / 2;
 let rightPressed = false;
 let leftPressed = false;
-let score = 0;
-let lives = 3;
+
+const ball = new Ball(ballX, ballY, ballRadius, '#ffda1f');
+const paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, '#0095DD');
+const background = new Background(0, 0, canvas.width, canvas.height, '#af1b3f');
+const score = new Score();
+const lives = new Lives(canvas.width - 65, 20, '#0095DD', 3, '16px Arial');
 
 const bricks = [];
 for (let c = 0; c < brickColumnCount; c += 1) {
@@ -29,24 +40,6 @@ for (let c = 0; c < brickColumnCount; c += 1) {
     bricks[c][r] = { x: 0, y: 0, status: 1 };
   }
 }
-
-// apparently this is how airbnb wants functions declared, new
-// to me
-const drawBall = function drawMovingGameBall() {
-  ctx.beginPath();
-  ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-  ctx.fillStyle = '#ffda1f';
-  ctx.fill();
-  ctx.closePath();
-};
-
-const drawPaddle = function drawGamePaddle() {
-  ctx.beginPath();
-  ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-  ctx.fillStyle = '#0095DD';
-  ctx.fill();
-  ctx.closePath();
-};
 
 const drawBricks = function drawBlockingBricks() {
   for (let c = 0; c < brickColumnCount; c += 1) {
@@ -72,88 +65,67 @@ const drawBricks = function drawBlockingBricks() {
   }
 };
 
-const drawScore = function drawScoreOnCanvas() {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#0095DD';
-  ctx.fillText(`Score: ${score}`, 8, 20);
-};
-
-const drawLives = function drawLivesOnCanvas() {
-  ctx.font = '16px Arial';
-  ctx.fillStyle = '#0095DD';
-  ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
-};
-
-const drawBackground = function drawCanvasBackground() {
-  ctx.beginPath();
-  ctx.rect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#af1b3f';
-  ctx.fill();
-  ctx.closePath();
-};
-
-const collisionDetection = function ballBrickCollisionDetection() {
-  for (let c = 0; c < brickColumnCount; c += 1) {
-    for (let r = 0; r < brickRowCount; r += 1) {
-      const b = bricks[c][r];
-      if (b.status === 1) {
-        if (
-          x > b.x
-                && x < b.x + brickWidth
-                && y > b.y
-                && y < b.y + brickHeight
-        ) {
-          dy = -dy;
-          b.status = 0;
-          score += 1;
-          if (score === brickRowCount * brickColumnCount) {
-            alert('YOU WIN, CONGRATULATIONS!');
-            document.location.reload();
-          }
-        }
-      }
-    }
-  }
-};
+// const collisionDetection = function ballBrickCollisionDetection() {
+//   for (let c = 0; c < brickColumnCount; c += 1) {
+//     for (let r = 0; r < brickRowCount; r += 1) {
+//       const b = bricks[c][r];
+//       if (b.status === 1) {
+//         if (
+//           x > b.x
+//                 && x < b.x + brickWidth
+//                 && y > b.y
+//                 && y < b.y + brickHeight
+//         ) {
+//           dy = -dy;
+//           b.status = 0;
+//           score += 1;
+//           if (score === brickRowCount * brickColumnCount) {
+//             alert('YOU WIN, CONGRATULATIONS!');
+//             document.location.reload();
+//           }
+//         }
+//       }
+//     }
+//   }
+// };
 
 const draw = function drawVisualComponents() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawBackground();
-  drawBall();
-  drawPaddle();
-  drawBricks();
-  collisionDetection();
-  drawScore();
-  drawLives();
-  x += dx;
-  y += dy;
-  if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-    dx = -dx;
+  background.render(ctx);
+  ball.render(ctx);
+  paddle.render(ctx);
+  // drawBricks();
+  // collisionDetection();
+  score.render(ctx);
+  lives.render(ctx);
+  ball.move(ctx);
+  if (ball.x + ball.dx > canvas.width - ballRadius || ball.x + ball.dx < ballRadius) {
+    ball.dx = -ball.dx;
   }
-  if (y + dy < ballRadius) {
-    dy = -dy;
-  } else if (y + dy > canvas.height - ballRadius) {
-    if (x > paddleX && x < paddleX + paddleWidth) {
-      dy = -dy;
+  if (ball.y + ball.dy < ballRadius) {
+    ball.dy = -ball.dy;
+  } else if (ball.y + ball.dy > canvas.height - ballRadius) {
+    if (ball.x > paddleX && ball.x < paddleX + paddleWidth) {
+      ball.dy = -ball.dy;
     } else {
-      lives -= 1;
+      lives.loseLife();
       if (!lives) {
         alert('GAME OVER');
         document.location.reload();
       } else {
-        x = canvas.width / 2;
-        y = canvas.height - 30;
-        dx = 6;
-        dy = -6;
-        paddleX = (canvas.width - paddleWidth) / 2;
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height - 30;
+        ball.dx = 6;
+        ball.dy = -6;
+        paddle.x = (canvas.width - paddleWidth) / 2;
       }
     }
   }
 
   if (rightPressed) {
-    paddleX = Math.min(paddleX + 7, canvas.width - paddleWidth);
+    paddle.x = Math.min(paddle.x + 7, canvas.width - paddle.width);
   } else if (leftPressed) {
-    paddleX = Math.max(paddleX - 7, 0);
+    paddle.x = Math.max(paddle.x - 7, 0);
   }
 
   requestAnimationFrame(draw);
@@ -178,7 +150,7 @@ const keyUpHandler = function handleKepReleaseForPaddle(e) {
 const mouseMoveHandler = function handleMouseMovement(e) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
-    paddleX = relativeX - paddleWidth / 2;
+    paddle.x = relativeX - paddleWidth / 2;
   }
 };
 
