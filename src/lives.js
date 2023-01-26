@@ -10,7 +10,7 @@ class Lives {
   render(ctx) {
     ctx.font = this.font;
     ctx.fillStyle = this.color;
-    ctx.fillText(`Score: ${this.lives}`, this.x, this.y);
+    ctx.fillText(`Lives: ${this.lives}`, this.x, this.y);
   }
 
   loseLife() {

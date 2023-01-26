@@ -109,7 +109,7 @@ const draw = function drawVisualComponents() {
       ball.dy = -ball.dy;
     } else {
       lives.loseLife();
-      if (!lives) {
+      if (!lives.lives) {
         alert('GAME OVER');
         document.location.reload();
       } else {
