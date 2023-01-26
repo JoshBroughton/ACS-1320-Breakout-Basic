@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 /* eslint-disable no-alert */
 import Brick from './brick.js';
 import Ball from './ball.js';
@@ -37,65 +38,60 @@ const bricks = [];
 for (let c = 0; c < brickColumnCount; c += 1) {
   bricks[c] = [];
   for (let r = 0; r < brickRowCount; r += 1) {
-    bricks[c][r] = { x: 0, y: 0, status: 1 };
+    bricks[c][r] = new Brick(0, 0, brickWidth, brickHeight, '#8a84e2');
   }
 }
 
 const drawBricks = function drawBlockingBricks() {
   for (let c = 0; c < brickColumnCount; c += 1) {
     for (let r = 0; r < brickRowCount; r += 1) {
-      if (bricks[c][r].status === 1) {
+      if (bricks[c][r].status === true) {
         const brickX = c * (brickWidth + brickPadding) + brickOffsetLeft;
         const brickY = r * (brickHeight + brickPadding) + brickOffsetTop;
         bricks[c][r].x = brickX;
         bricks[c][r].y = brickY;
-        ctx.beginPath();
-        ctx.rect(brickX, brickY, brickWidth, brickHeight);
-        let brickColor = '#8a84e2';
         if (r === 1) {
-          brickColor = '#ffa69e';
+          bricks[c][r].color = '#ffa69e';
         } else if (r === 2) {
-          brickColor = '#ff686b';
+          bricks[c][r].color = '#ff686b';
         }
-        ctx.fillStyle = brickColor;
-        ctx.fill();
-        ctx.closePath();
+        bricks[c][r].render(ctx);
       }
     }
   }
 };
 
-// const collisionDetection = function ballBrickCollisionDetection() {
-//   for (let c = 0; c < brickColumnCount; c += 1) {
-//     for (let r = 0; r < brickRowCount; r += 1) {
-//       const b = bricks[c][r];
-//       if (b.status === 1) {
-//         if (
-//           x > b.x
-//                 && x < b.x + brickWidth
-//                 && y > b.y
-//                 && y < b.y + brickHeight
-//         ) {
-//           dy = -dy;
-//           b.status = 0;
-//           score += 1;
-//           if (score === brickRowCount * brickColumnCount) {
-//             alert('YOU WIN, CONGRATULATIONS!');
-//             document.location.reload();
-//           }
-//         }
-//       }
-//     }
-//   }
-// };
+const collisionDetection = function ballBrickCollisionDetection() {
+  for (let c = 0; c < brickColumnCount; c += 1) {
+    for (let r = 0; r < brickRowCount; r += 1) {
+      const b = bricks[c][r];
+      if (b.status === true) {
+        if (
+          ball.x > b.x
+                && ball.x < b.x + brickWidth
+                && ball.y > b.y
+                && ball.y < b.y + brickHeight
+        ) {
+          ball.dy = -ball.dy;
+          b.status = 0;
+          score.score += 1;
+          if (score === brickRowCount * brickColumnCount) {
+            alert('YOU WIN, CONGRATULATIONS!');
+            document.location.reload();
+          }
+        }
+      }
+    }
+  }
+};
 
 const draw = function drawVisualComponents() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   background.render(ctx);
   ball.render(ctx);
   paddle.render(ctx);
-  // drawBricks();
-  // collisionDetection();
+  drawBricks();
+  collisionDetection();
   score.render(ctx);
   lives.render(ctx);
   ball.move(ctx);
@@ -105,7 +101,7 @@ const draw = function drawVisualComponents() {
   if (ball.y + ball.dy < ballRadius) {
     ball.dy = -ball.dy;
   } else if (ball.y + ball.dy > canvas.height - ballRadius) {
-    if (ball.x > paddleX && ball.x < paddleX + paddleWidth) {
+    if (ball.x > paddle.x && ball.x < paddle.x + paddleWidth) {
       ball.dy = -ball.dy;
     } else {
       lives.loseLife();
