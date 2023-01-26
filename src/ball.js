@@ -21,6 +21,14 @@ class Ball extends Sprite {
     ctx.fill();
     ctx.closePath();
   }
+
+  // reset the ball to the starting position
+  reset(canvasWidth, canvasHeight) {
+    this.x = canvasWidth / 2;
+    this.y = canvasHeight - 30;
+    this.dx = 6;
+    this.dy = -6;
+  }
 }
 
 export default Ball;

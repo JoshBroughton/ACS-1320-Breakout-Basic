@@ -42,6 +42,13 @@ for (let c = 0; c < brickColumnCount; c += 1) {
   }
 }
 
+const endGame = function displayEndGameScreen(message) {
+  const headerElement = document.getElementById('message');
+  headerElement.innerText = message;
+
+  document.getElementById('overlay').style.display = 'flex';
+};
+
 const drawBricks = function drawBlockingBricks() {
   for (let c = 0; c < brickColumnCount; c += 1) {
     for (let r = 0; r < brickRowCount; r += 1) {
@@ -75,9 +82,8 @@ const collisionDetection = function ballBrickCollisionDetection() {
           ball.dy = -ball.dy;
           b.status = 0;
           score.score += 1;
-          if (score === brickRowCount * brickColumnCount) {
-            alert('YOU WIN, CONGRATULATIONS!');
-            document.location.reload();
+          if (score.score === brickRowCount * brickColumnCount) {
+            endGame('You Win!');
           }
         }
       }
@@ -106,13 +112,9 @@ const draw = function drawVisualComponents() {
     } else {
       lives.loseLife();
       if (!lives.lives) {
-        alert('GAME OVER');
-        document.location.reload();
+        endGame('Game Over! You lost.');
       } else {
-        ball.x = canvas.width / 2;
-        ball.y = canvas.height - 30;
-        ball.dx = 6;
-        ball.dy = -6;
+        ball.reset(canvas.width, canvas.height);
         paddle.x = (canvas.width - paddleWidth) / 2;
       }
     }
