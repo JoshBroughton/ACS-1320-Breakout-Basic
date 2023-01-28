@@ -24,6 +24,24 @@ canvas {
 }
 
 .content {
-  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 90px;
+}
+
+#message {
+  color: gold;
+  text-align: center;
+}
+
+button {
+  font-size: larger;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+button:hover {
+  transform: scale(1.05);
 }
 

@@ -27,6 +27,7 @@ const brickOffsetLeft = 30;
 
 let rightPressed = false;
 let leftPressed = false;
+let isPlaying = true;
 
 const ball = new Ball(ballX, ballY, ballRadius, '#ffda1f');
 const paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, '#0095DD');
@@ -43,9 +44,8 @@ for (let c = 0; c < brickColumnCount; c += 1) {
 }
 
 const endGame = function displayEndGameScreen(message) {
-  const headerElement = document.getElementById('message');
-  headerElement.innerText = message;
-
+  isPlaying = false;
+  document.getElementById('message').innerText = message;
   document.getElementById('overlay').style.display = 'flex';
 };
 
@@ -125,8 +125,10 @@ const draw = function drawVisualComponents() {
   } else if (leftPressed) {
     paddle.x = Math.max(paddle.x - 7, 0);
   }
-
-  requestAnimationFrame(draw);
+  // stops the animation refresh when the game is over
+  if (isPlaying === true) {
+    requestAnimationFrame(draw);
+  }
 };
 
 const keyDownHandler = function handleKeyPressForPaddle(e) {
@@ -152,8 +154,27 @@ const mouseMoveHandler = function handleMouseMovement(e) {
   }
 };
 
+const playAgain = function playAgainEventHandler() {
+  // remove overlay
+  document.getElementById('overlay').style.display = 'none';
+  // reset brick status to true
+  for (let c = 0; c < brickColumnCount; c += 1) {
+    for (let r = 0; r < brickRowCount; r += 1) {
+      bricks[c][r].status = true;
+    }
+  }
+  // reset ball and paddle
+  ball.reset(canvas.width, canvas.height);
+  paddle.x = (canvas.width - paddleWidth) / 2;
+  isPlaying = true;
+  score.score = 0;
+  lives.lives = 3;
+  draw();
+};
+
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 document.addEventListener('mousemove', mouseMoveHandler, false);
+document.getElementById('playAgain').addEventListener('click', playAgain);
 
 draw();
