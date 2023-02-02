@@ -3,7 +3,7 @@
 import Brick from './brick.js';
 import Ball from './ball.js';
 import Paddle from './paddle.js';
-import Background from './background.js';
+import Background from './background..js';
 import Score from './score.js';
 import Lives from './lives.js';
 
