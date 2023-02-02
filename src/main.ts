@@ -1,41 +1,41 @@
 /* eslint-disable import/extensions */
 /* eslint-disable no-alert */
-import Brick from './brick.js';
-import Ball from './ball.js';
-import Paddle from './paddle.js';
-import Background from './background..js';
-import Score from './score.js';
-import Lives from './lives.js';
+import Brick from './brick';
+import Ball from './ball';
+import Paddle from './paddle';
+import Background from './background';
+import Score from './score';
+import Lives from './lives';
 
-const canvas = document.getElementById('myCanvas');
-const ctx = canvas.getContext('2d');
+const canvas: HTMLCanvasElement = document.getElementById('myCanvas') as HTMLCanvasElement;
+const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
 
-const ballX = canvas.width / 2;
-const ballY = canvas.height - 30;
-const ballRadius = 10;
-const paddleHeight = 10;
-const paddleWidth = 75;
-const paddleX = (canvas.width - paddleWidth) / 2;
-const paddleY = canvas.height - paddleHeight;
-const brickRowCount = 3;
-const brickColumnCount = 5;
-const brickWidth = 75;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
+const ballX: number = canvas.width / 2;
+const ballY: number = canvas.height - 30;
+const ballRadius: number = 10;
+const paddleHeight: number = 10;
+const paddleWidth: number = 75;
+const paddleX: number = (canvas.width - paddleWidth) / 2;
+const paddleY: number = canvas.height - paddleHeight;
+const brickRowCount: number = 3;
+const brickColumnCount: number = 5;
+const brickWidth: number = 75;
+const brickHeight: number = 20;
+const brickPadding: number = 10;
+const brickOffsetTop: number = 30;
+const brickOffsetLeft: number = 30;
 
-let rightPressed = false;
-let leftPressed = false;
-let isPlaying = true;
+let rightPressed: boolean = false;
+let leftPressed: boolean = false;
+let isPlaying: boolean = true;
 
-const ball = new Ball(ballX, ballY, ballRadius, '#ffda1f');
-const paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, '#0095DD');
-const background = new Background(0, 0, canvas.width, canvas.height, '#af1b3f');
-const score = new Score();
-const lives = new Lives(canvas.width - 65, 20, '#0095DD', 3, '16px Arial');
+const ball: Ball = new Ball(ballX, ballY, ballRadius, '#ffda1f');
+const paddle: Paddle = new Paddle(paddleX, paddleY, paddleWidth, paddleHeight, '#0095DD');
+const background: Background = new Background(0, 0, canvas.width, canvas.height, '#af1b3f');
+const score: Score = new Score();
+const lives: Lives = new Lives(canvas.width - 65, 20, '#0095DD', 3, '16px Arial');
 
-const bricks = [];
+const bricks: Brick[][] = [];
 for (let c = 0; c < brickColumnCount; c += 1) {
   bricks[c] = [];
   for (let r = 0; r < brickRowCount; r += 1) {
@@ -43,13 +43,13 @@ for (let c = 0; c < brickColumnCount; c += 1) {
   }
 }
 
-const endGame = function displayEndGameScreen(message) {
+const endGame = function displayEndGameScreen(message: string): void {
   isPlaying = false;
   document.getElementById('message').innerText = message;
   document.getElementById('overlay').style.display = 'flex';
 };
 
-const drawBricks = function drawBlockingBricks() {
+const drawBricks = function drawBlockingBricks(): void {
   for (let c = 0; c < brickColumnCount; c += 1) {
     for (let r = 0; r < brickRowCount; r += 1) {
       if (bricks[c][r].status === true) {
@@ -80,7 +80,7 @@ const collisionDetection = function ballBrickCollisionDetection() {
                 && ball.y < b.y + brickHeight
         ) {
           ball.dy = -ball.dy;
-          b.status = 0;
+          b.status = false;
           score.score += 1;
           if (score.score === brickRowCount * brickColumnCount) {
             endGame('You Win!');
@@ -100,7 +100,7 @@ const draw = function drawVisualComponents() {
   collisionDetection();
   score.render(ctx);
   lives.render(ctx);
-  ball.move(ctx);
+  ball.move();
   if (ball.x + ball.dx > canvas.width - ballRadius || ball.x + ball.dx < ballRadius) {
     ball.dx = -ball.dx;
   }
@@ -131,7 +131,7 @@ const draw = function drawVisualComponents() {
   }
 };
 
-const keyDownHandler = function handleKeyPressForPaddle(e) {
+const keyDownHandler = function handleKeyPressForPaddle(e: KeyboardEvent) {
   if (e.key === 'Right' || e.key === 'ArrowRight') {
     rightPressed = true;
   } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
@@ -139,7 +139,7 @@ const keyDownHandler = function handleKeyPressForPaddle(e) {
   }
 };
 
-const keyUpHandler = function handleKepReleaseForPaddle(e) {
+const keyUpHandler = function handleKepReleaseForPaddle(e: KeyboardEvent) {
   if (e.key === 'Right' || e.key === 'ArrowRight') {
     rightPressed = false;
   } else if (e.key === 'Left' || e.key === 'ArrowLeft') {
@@ -147,7 +147,7 @@ const keyUpHandler = function handleKepReleaseForPaddle(e) {
   }
 };
 
-const mouseMoveHandler = function handleMouseMovement(e) {
+const mouseMoveHandler = function handleMouseMovement(e: MouseEvent) {
   const relativeX = e.clientX - canvas.offsetLeft;
   if (relativeX > 0 && relativeX < canvas.width) {
     paddle.x = relativeX - paddleWidth / 2;

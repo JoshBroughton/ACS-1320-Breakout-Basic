@@ -1,4 +1,10 @@
 class Score {
+  x: number;
+  y: number;
+  color: string;
+  score: number
+  font: string;
+
   constructor(x = 8, y = 20, color = '#0095DD', score = 0, font = '16px Arial') {
     this.x = x;
     this.y = y;
@@ -7,7 +13,7 @@ class Score {
     this.font = font;
   }
 
-  render(ctx) {
+  render(ctx: CanvasRenderingContext2D) {
     ctx.font = this.font;
     ctx.fillStyle = this.color;
     ctx.fillText(`Score: ${this.score}`, this.x, this.y);

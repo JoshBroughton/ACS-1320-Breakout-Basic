@@ -1,5 +1,11 @@
 class Lives {
-  constructor(x, y = 20, color = '#0095DD', lives = 3, font = '16px Arial') {
+  x: number;
+  y: number;
+  color: string;
+  lives: number
+  font: string;
+
+  constructor(x: number, y = 20, color = '#0095DD', lives = 3, font = '16px Arial') {
     this.x = x;
     this.y = y;
     this.color = color;
@@ -7,7 +13,7 @@ class Lives {
     this.font = font;
   }
 
-  render(ctx) {
+  render(ctx: CanvasRenderingContext2D) {
     ctx.font = this.font;
     ctx.fillStyle = this.color;
     ctx.fillText(`Lives: ${this.lives}`, this.x, this.y);

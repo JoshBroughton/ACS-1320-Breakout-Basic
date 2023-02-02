@@ -1,8 +1,8 @@
 /* eslint-disable import/extensions */
-import Sprite from './sprite.js';
+import Sprite from './sprite';
 
 class Background extends Sprite {
-  render(ctx) {
+  render(ctx: CanvasRenderingContext2D) {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.fillStyle = this.color;
